@@ -1,0 +1,1488 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OXALOCKFILES - Lock & Protect Your Links</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary-red: #e53935;
+            --dark-red: #c62828;
+            --light-red: #ff6b6b;
+            --white: #ffffff;
+            --light-gray: #f5f5f5;
+            --gray: #9e9e9e;
+            --dark-gray: #424242;
+            --success: #4caf50;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            background-color: var(--light-gray);
+            color: var(--dark-gray);
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* Header & Logo */
+        .header {
+            background-color: var(--white);
+            box-shadow: var(--shadow);
+            padding: 1.2rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid var(--primary-red);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+            font-size: 1.8rem;
+            color: var(--primary-red);
+        }
+
+        .logo i {
+            font-size: 2rem;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .username {
+            font-weight: 600;
+            color: var(--dark-gray);
+        }
+
+        .logout-btn {
+            background-color: var(--primary-red);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background-color 0.3s;
+        }
+
+        .logout-btn:hover {
+            background-color: var(--dark-red);
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Dashboard */
+        .dashboard {
+            background-color: var(--white);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 1rem;
+        }
+
+        .dashboard-title {
+            font-size: 1.8rem;
+            color: var(--dark-red);
+        }
+
+        .create-btn {
+            background-color: var(--primary-red);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background-color 0.3s;
+        }
+
+        .create-btn:hover {
+            background-color: var(--dark-red);
+        }
+
+        .empty-dashboard {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--gray);
+        }
+
+        .empty-dashboard i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            color: #ddd;
+        }
+
+        .empty-dashboard h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Link Cards */
+        .links-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .link-card {
+            background-color: var(--white);
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            padding: 1.5rem;
+            border-left: 5px solid var(--primary-red);
+            transition: transform 0.3s;
+        }
+
+        .link-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .link-name {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--dark-red);
+            margin-bottom: 0.5rem;
+        }
+
+        .link-stats {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 1.5rem;
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        .link-stats i {
+            margin-right: 5px;
+        }
+
+        .link-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .visit-btn {
+            background-color: var(--light-gray);
+            color: var(--dark-gray);
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .visit-btn:hover {
+            background-color: #e0e0e0;
+        }
+
+        .setting-btn {
+            background-color: var(--primary-red);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .setting-btn:hover {
+            background-color: var(--dark-red);
+        }
+
+        /* Modal Styling */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: var(--white);
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            animation: modalAppear 0.3s ease-out;
+        }
+
+        @keyframes modalAppear {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            background-color: var(--primary-red);
+            color: white;
+            padding: 1.5rem;
+            font-size: 1.3rem;
+            font-weight: 700;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .modal-body {
+            padding: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--dark-gray);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-input:focus {
+            border-color: var(--primary-red);
+            outline: none;
+        }
+
+        .submit-btn {
+            background-color: var(--primary-red);
+            color: white;
+            border: none;
+            padding: 14px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 1rem;
+            width: 100%;
+            transition: background-color 0.3s;
+            margin-top: 1rem;
+        }
+
+        .submit-btn:hover {
+            background-color: var(--dark-red);
+        }
+
+        .submit-btn:disabled {
+            background-color: var(--gray);
+            cursor: not-allowed;
+        }
+
+        /* Verification Page */
+        .verification-container {
+            max-width: 800px;
+            margin: 4rem auto;
+            padding: 2rem;
+            background-color: var(--white);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            text-align: center;
+        }
+
+        .verification-header {
+            margin-bottom: 2rem;
+            color: var(--dark-red);
+        }
+
+        .verification-header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .verification-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .verification-step {
+            background-color: var(--light-gray);
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: left;
+            border-left: 4px solid var(--primary-red);
+        }
+
+        .step-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .step-name {
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--dark-gray);
+        }
+
+        .step-status {
+            font-weight: 600;
+            font-size: 0.9rem;
+            padding: 4px 12px;
+            border-radius: 20px;
+        }
+
+        .pending {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        .completed {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .verify-btn {
+            background-color: var(--primary-red);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 1rem;
+        }
+
+        .verify-btn:hover {
+            background-color: var(--dark-red);
+        }
+
+        .final-btn {
+            background-color: var(--success);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-top: 1rem;
+            width: 100%;
+            transition: background-color 0.3s;
+        }
+
+        .final-btn:hover {
+            background-color: #388e3c;
+        }
+
+        .final-btn:disabled {
+            background-color: var(--gray);
+            cursor: not-allowed;
+        }
+
+        /* iPhone Notification */
+        .iphone-notification {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background-color: var(--white);
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            width: 300px;
+            overflow: hidden;
+            z-index: 2000;
+            animation: slideIn 0.5s ease-out;
+            display: none;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .iphone-header {
+            background-color: #f5f5f7;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .iphone-time {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .iphone-icons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .iphone-body {
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .iphone-icon {
+            width: 40px;
+            height: 40px;
+            background-color: var(--primary-red);
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .iphone-content h4 {
+            margin-bottom: 5px;
+            color: var(--dark-gray);
+        }
+
+        .iphone-content p {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        .success {
+            border-left: 4px solid var(--success);
+        }
+
+        .processing {
+            border-left: 4px solid #ffa000;
+        }
+
+        /* Footer */
+        .footer {
+            background-color: var(--dark-gray);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            margin-top: 3rem;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .footer-logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--white);
+        }
+
+        .footer-year {
+            font-size: 1rem;
+            color: #bdbdbd;
+        }
+
+        .help-center {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #bdbdbd;
+            margin-top: 1rem;
+        }
+
+        /* Utility Classes */
+        .hidden {
+            display: none !important;
+        }
+
+        .notification-success {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: var(--success);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: fadeInUp 0.5s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .verification-links {
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .verification-link-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .verification-link-item:last-child {
+            border-bottom: none;
+        }
+
+        .remove-link-btn {
+            background-color: #ff5252;
+            color: white;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .add-link-btn {
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .header {
+                padding: 1rem;
+            }
+            
+            .logo {
+                font-size: 1.4rem;
+            }
+            
+            .dashboard-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .links-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .verification-container {
+                margin: 2rem auto;
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- iPhone Notification -->
+    <div class="iphone-notification" id="iphoneNotification">
+        <div class="iphone-header">
+            <div class="iphone-time" id="currentTime">09:41</div>
+            <div class="iphone-icons">
+                <i class="fas fa-signal"></i>
+                <i class="fas fa-wifi"></i>
+                <i class="fas fa-battery-full"></i>
+            </div>
+        </div>
+        <div class="iphone-body">
+            <div class="iphone-icon">S</div>
+            <div class="iphone-content">
+                <h4 id="notificationTitle">System</h4>
+                <p id="notificationMessage">Memverifikasi Akun...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Notification -->
+    <div class="notification-success hidden" id="successNotification">
+        <i class="fas fa-check-circle"></i>
+        <span id="successMessage">LINK BERHASIL DI UPLOAD</span>
+    </div>
+
+    <!-- Registration Modal -->
+    <div class="modal" id="registerModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span>Daftar Untuk Lanjut</span>
+                <button class="modal-close" id="closeRegister">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label" for="name">Masukan Nama</label>
+                    <input type="text" class="form-input" id="name" placeholder="Nama lengkap">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="username">Masukan Username</label>
+                    <input type="text" class="form-input" id="username" placeholder="Username">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="password">Masukan Password</label>
+                    <input type="password" class="form-input" id="password" placeholder="Password">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="confirmPassword">Masukan Password Sebelumnya</label>
+                    <input type="password" class="form-input" id="confirmPassword" placeholder="Konfirmasi password">
+                </div>
+                <button class="submit-btn" id="registerBtn">DAFTAR</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Link Modal -->
+    <div class="modal" id="createModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span>CREATE NEW</span>
+                <button class="modal-close" id="closeCreate">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label" for="targetLink">Masukan link tujuan...</label>
+                    <input type="url" class="form-input" id="targetLink" placeholder="https://example.com">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="linkName">Nama Link</label>
+                    <input type="text" class="form-input" id="linkName" placeholder="Nama untuk link Anda">
+                </div>
+                
+                <div class="verification-links">
+                    <h4 style="margin-bottom: 1rem; color: var(--dark-red);">Link Verifikasi</h4>
+                    <div id="verificationLinksContainer">
+                        <!-- Verification links will be added here -->
+                    </div>
+                    <button class="add-link-btn" id="addVerificationLink">
+                        <i class="fas fa-plus"></i> Tambahkan Link Verifikasi
+                    </button>
+                    <p style="margin-top: 0.5rem; font-size: 0.85rem; color: var(--gray);">Limit: Maksimal 10 link verifikasi</p>
+                </div>
+                
+                <button class="submit-btn" id="uploadBtn">UPLOAD</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Upload Progress Modal -->
+    <div class="modal" id="uploadModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span>Mengupload Link</span>
+            </div>
+            <div class="modal-body" style="text-align: center;">
+                <div style="font-size: 4rem; color: var(--primary-red); margin-bottom: 1.5rem;">
+                    <i class="fas fa-spinner fa-spin"></i>
+                </div>
+                <h3 style="margin-bottom: 1rem; color: var(--dark-gray);">MENGUPLOAD LINK MOHON TUNGGU SEBENTAR...</h3>
+                <div style="width: 100%; height: 8px; background-color: #eee; border-radius: 4px; overflow: hidden; margin-top: 2rem;">
+                    <div id="uploadProgress" style="width: 0%; height: 100%; background-color: var(--primary-red); transition: width 0.3s;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Upload Modal -->
+    <div class="modal" id="successUploadModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span>Upload Berhasil</span>
+                <button class="modal-close" id="closeSuccessUpload">&times;</button>
+            </div>
+            <div class="modal-body" style="text-align: center;">
+                <div style="font-size: 5rem; color: var(--success); margin-bottom: 1.5rem;">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <h3 style="margin-bottom: 1.5rem; color: var(--dark-gray);">LINK BERHASIL DI UPLOAD</h3>
+                <div class="form-group">
+                    <label class="form-label">Link OXALOCKFILES Anda:</label>
+                    <input type="text" class="form-input" id="generatedLink" readonly style="text-align: center; font-weight: 600;">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Website Kami:</label>
+                    <input type="text" class="form-input" value="https://oxalockfileszoro.vercel.app" readonly style="text-align: center;">
+                </div>
+                <button class="submit-btn" id="closeSuccessBtn">CLOSE</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Setting Modal -->
+    <div class="modal" id="settingModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span>SETTING</span>
+                <button class="modal-close" id="closeSetting">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label" for="editLinkName">Masukan Nama</label>
+                    <input type="text" class="form-input" id="editLinkName" placeholder="Nama link">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="editTargetLink">Update link tujuan...</label>
+                    <input type="url" class="form-input" id="editTargetLink" placeholder="https://example.com">
+                </div>
+                
+                <div class="verification-links">
+                    <h4 style="margin-bottom: 1rem; color: var(--dark-red);">Update Link Verifikasi</h4>
+                    <div id="editVerificationLinksContainer">
+                        <!-- Edit verification links will be added here -->
+                    </div>
+                    <button class="add-link-btn" id="addEditVerificationLink">
+                        <i class="fas fa-plus"></i> TAMBAHKAN LINK VERIFIKASI
+                    </button>
+                </div>
+                
+                <button class="submit-btn" id="confirmUpdateBtn">CONFIRM</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main App Content -->
+    <div id="appContent">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo">
+                <i class="fas fa-lock"></i>
+                <span>OXALOCKFILES</span>
+            </div>
+            <div class="user-info" id="userInfo">
+                <!-- User info will be populated here -->
+            </div>
+        </div>
+
+        <!-- Dashboard -->
+        <div class="container">
+            <div class="dashboard">
+                <div class="dashboard-header">
+                    <h2 class="dashboard-title">DASHBOARD</h2>
+                    <button class="create-btn" id="createNewBtn">
+                        <i class="fas fa-plus"></i> CREATE NEW
+                    </button>
+                </div>
+                
+                <div id="dashboardContent">
+                    <!-- Dashboard content will be populated here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <div class="footer-content">
+                <div class="footer-logo">OXALOCKFILES</div>
+                <div class="footer-year">© OXALOCKFILESZORO 2026</div>
+                <div class="help-center">
+                    <i class="fas fa-envelope"></i>
+                    <span>oxafileslockzoro@gmail.com (official)</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Verification Page (Hidden by default) -->
+    <div id="verificationPage" class="hidden">
+        <div class="verification-container">
+            <div class="verification-header">
+                <h1>Selamat datang di OXALOCKFILES</h1>
+                <p>Lanjutkan verifikasi untuk mendapatkan link tujuan</p>
+            </div>
+            
+            <div class="verification-steps" id="verificationSteps">
+                <!-- Verification steps will be added here -->
+            </div>
+            
+            <button class="final-btn" id="finalButton" disabled>
+                WEBSITE TUJUAN!
+            </button>
+            
+            <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid #eee;">
+                <p style="color: var(--gray); font-size: 0.9rem;">Sistem akan mengecek jika Anda benar-benar sudah menyelesaikan semua verifikasi di atas.</p>
+            </div>
+        </div>
+                
+        <!-- Footer -->
+        <div class="footer">
+            <div class="footer-content">
+                <div class="footer-logo">OXALOCKFILES</div>
+                <div class="footer-year">© OXALOCKFILESZORO 2026</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let currentUser = null;
+        let userLinks = [];
+        let currentLinkId = null;
+        let verificationStepStatus = [];
+        let verificationLinkCount = 0;
+        let currentSettingLinkId = null;
+
+        // DOM Elements
+        const appContent = document.getElementById('appContent');
+        const verificationPage = document.getElementById('verificationPage');
+        const registerModal = document.getElementById('registerModal');
+        const createModal = document.getElementById('createModal');
+        const uploadModal = document.getElementById('uploadModal');
+        const successUploadModal = document.getElementById('successUploadModal');
+        const settingModal = document.getElementById('settingModal');
+        const iphoneNotification = document.getElementById('iphoneNotification');
+        const successNotification = document.getElementById('successNotification');
+        const dashboardContent = document.getElementById('dashboardContent');
+        const userInfo = document.getElementById('userInfo');
+        const verificationLinksContainer = document.getElementById('verificationLinksContainer');
+        const editVerificationLinksContainer = document.getElementById('editVerificationLinksContainer');
+        const verificationSteps = document.getElementById('verificationSteps');
+        const generatedLink = document.getElementById('generatedLink');
+        const currentTime = document.getElementById('currentTime');
+
+        // Initialize current time
+        function updateCurrentTime() {
+            const now = new Date();
+            const hours = now.getHours().toString().padStart(2, '0');
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            currentTime.textContent = `${hours}:${minutes}`;
+        }
+        setInterval(updateCurrentTime, 60000);
+        updateCurrentTime();
+
+        // Check if user is registered
+        function checkUserRegistration() {
+            const user = localStorage.getItem('oxalock_user');
+            if (user) {
+                currentUser = JSON.parse(user);
+                userLinks = JSON.parse(localStorage.getItem(`oxalock_links_${currentUser.username}`)) || [];
+                showDashboard();
+            } else {
+                showRegisterModal();
+            }
+        }
+
+        // Show registration modal
+        function showRegisterModal() {
+            registerModal.style.display = 'flex';
+        }
+
+        // Show dashboard
+        function showDashboard() {
+            appContent.classList.remove('hidden');
+            verificationPage.classList.add('hidden');
+            updateUserInfo();
+            renderDashboard();
+        }
+
+        // Update user info in header
+        function updateUserInfo() {
+            if (currentUser) {
+                userInfo.innerHTML = `
+                    <span class="username">${currentUser.username}</span>
+                    <button class="logout-btn" id="logoutBtn">Logout</button>
+                `;
+                document.getElementById('logoutBtn').addEventListener('click', logout);
+            }
+        }
+        
+        // Render dashboard content
+        function renderDashboard() {
+            if (userLinks.length === 0) {
+                dashboardContent.innerHTML = `
+                    <div class="empty-dashboard">
+                        <i class="fas fa-link"></i>
+                        <h3>Dashboard Kosong...</h3>
+                        <p>Belum ada link yang dibuat. Klik "CREATE NEW" untuk membuat link pertama Anda.</p>
+                    </div>
+                `;
+            } else {
+                let linksHTML = '<div class="links-container">';
+                
+                userLinks.forEach(link => {
+                    linksHTML += `
+                        <div class="link-card" data-id="${link.id}">
+                            <div class="link-name">${link.name}</div>
+                            <div class="link-stats">
+                                <span><i class="fas fa-eye"></i> Berkunjung: ${link.visits}</span>
+                                <span><i class="fas fa-link"></i> Verifikasi: ${link.verificationLinks.length}</span>
+                            </div>
+                            <div class="link-actions">
+                                <a href="#" class="visit-btn" data-id="${link.id}">Kunjungi Link</a>
+                                <button class="setting-btn" data-id="${link.id}">SETTING</button>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                linksHTML += '</div>';
+                dashboardContent.innerHTML = linksHTML;
+                
+                // Add event listeners to buttons
+                document.querySelectorAll('.visit-btn').forEach(btn => {
+                    btn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        const linkId = this.getAttribute('data-id');
+                        visitLink(linkId);
+                    });
+                });
+                
+                document.querySelectorAll('.setting-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const linkId = this.getAttribute('data-id');
+                        openSettingModal(linkId);
+                    });
+                });
+            }
+        }
+
+        // Visit link (show verification page)
+        function visitLink(linkId) {
+            const link = userLinks.find(l => l.id === linkId);
+            if (link) {
+                // Increment visit count
+                link.visits++;
+                localStorage.setItem(`oxalock_links_${currentUser.username}`, JSON.stringify(userLinks));
+                
+                // Set current link ID
+                currentLinkId = linkId;
+                
+                // Reset verification status
+                verificationStepStatus = new Array(link.verificationLinks.length).fill(false);
+                
+                // Show verification page
+                showVerificationPage(link);
+            }
+        }
+
+        // Show verification page
+        function showVerificationPage(link) {
+            appContent.classList.add('hidden');
+            verificationPage.classList.remove('hidden');
+            
+            // Render verification steps
+            let stepsHTML = '';
+            
+            link.verificationLinks.forEach((verifLink, index) => {
+                const platform = detectPlatform(verifLink);
+                
+                stepsHTML += `
+                    <div class="verification-step">
+                        <div class="step-header">
+                            <div class="step-name">${platform} Verification</div>
+                            <div class="step-status pending" id="stepStatus${index}">BELUM</div>
+                        </div>
+                        <p>Silakan kunjungi link di bawah ini dan selesaikan verifikasi</p>
+                        <p style="margin-top: 0.5rem; font-size: 0.9rem; color: var(--gray); word-break: break-all;">${verifLink}</p>
+                        <button class="verify-btn" data-index="${index}" data-link="${verifLink}">
+                            <i class="fas fa-external-link-alt"></i> Verifikasi ${platform}
+                        </button>
+                    </div>
+                `;
+            });
+            
+            verificationSteps.innerHTML = stepsHTML;
+            
+            // Add event listeners to verification buttons
+            document.querySelectorAll('.verify-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const index = parseInt(this.getAttribute('data-index'));
+                    const link = this.getAttribute('data-link');
+                    verifyStep(index, link);
+                });
+            });
+            
+            // Update final button
+            updateFinalButton();
+        }
+
+        // Detect platform from URL
+        function detectPlatform(url) {
+            if (url.includes('youtube.com') || url.includes('youtu.be')) return 'YouTube';
+            if (url.includes('instagram.com')) return 'Instagram';
+            if (url.includes('facebook.com')) return 'Facebook';
+            if (url.includes('twitter.com') || url.includes('x.com')) return 'Twitter';
+            if (url.includes('tiktok.com')) return 'TikTok';
+            if (url.includes('telegram.org') || url.includes('t.me')) return 'Telegram';
+            if (url.includes('discord.com') || url.includes('discord.gg')) return 'Discord';
+            return 'Website';
+        }
+
+        // Verify a step
+        function verifyStep(index, link) {
+            // In a real implementation, this would actually check if user completed the verification
+            // For demo purposes, we'll simulate verification after 2 seconds
+            showIphoneNotification('System', 'Memverifikasi tindakan pengguna...', 'processing');
+            
+            setTimeout(() => {
+                verificationStepStatus[index] = true;
+                document.getElementById(`stepStatus${index}`).textContent = 'SELESAI';
+                document.getElementById(`stepStatus${index}`).className = 'step-status completed';
+                
+                showIphoneNotification('System', 'Verifikasi berhasil!', 'success');
+                updateFinalButton();
+            }, 2000);
+            
+            // Open verification link in new tab
+            window.open(link, '_blank');
+        }
+
+        // Update final button state
+        function updateFinalButton() {
+            const finalButton = document.getElementById('finalButton');
+            const allVerified = verificationStepStatus.every(status => status === true);
+            
+            if (allVerified) {
+                finalButton.disabled = false;
+                finalButton.textContent = 'WEBSITE TUJUAN!';
+            } else {
+                finalButton.disabled = true;
+                finalButton.textContent = 'Selesaikan semua verifikasi terlebih dahulu';
+            }
+            
+            // Add event listener to final button
+            finalButton.onclick = function() {
+                if (!allVerified) return;
+                
+                const link = userLinks.find(l => l.id === currentLinkId);
+                if (link) {
+                    window.open(link.targetLink, '_blank');
+                }
+            };
+        }
+
+        // Show iPhone notification
+        function showIphoneNotification(title, message, type = 'processing') {
+            document.getElementById('notificationTitle').textContent = title;
+            document.getElementById('notificationMessage').textContent = message;
+            
+            iphoneNotification.className = 'iphone-notification';
+            if (type === 'success') {
+                iphoneNotification.classList.add('success');
+            } else {
+                iphoneNotification.classList.add('processing');
+            }
+            
+            iphoneNotification.style.display = 'block';
+            
+            // Hide after 3 seconds
+            setTimeout(() => {
+                iphoneNotification.style.display = 'none';
+            }, 3000);
+        }
+
+        // Show success notification
+        function showSuccessNotification(message) {
+            document.getElementById('successMessage').textContent = message;
+            successNotification.classList.remove('hidden');
+            
+            setTimeout(() => {
+                successNotification.classList.add('hidden');
+            }, 3000);
+        }
+
+        // Open setting modal
+        function openSettingModal(linkId) {
+            const link = userLinks.find(l => l.id === linkId);
+            if (link) {
+                currentSettingLinkId = linkId;
+                
+                // Populate form fields
+                document.getElementById('editLinkName').value = link.name;
+                document.getElementById('editTargetLink').value = link.targetLink;
+                
+                // Clear and populate verification links
+                editVerificationLinksContainer.innerHTML = '';
+                verificationLinkCount = 0;
+                
+                link.verificationLinks.forEach((verifLink, index) => {
+                    addEditVerificationLinkField(verifLink);
+                });
+                
+                settingModal.style.display = 'flex';
+            }
+        }
+
+        // Add verification link field to create modal
+        function addVerificationLinkField(value = '') {
+            if (verificationLinkCount >= 10) {
+                alert('Maksimal 10 link verifikasi!');
+                return;
+            }
+            const index = verificationLinkCount;
+            verificationLinkCount++;
+            
+            const linkDiv = document.createElement('div');
+            linkDiv.className = 'verification-link-item';
+            linkDiv.innerHTML = `
+                <input type="url" class="form-input verification-link-input" placeholder="https://example.com" value="${value}" style="flex: 1;">
+                <button type="button" class="remove-link-btn" data-index="${index}">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+            
+            verificationLinksContainer.appendChild(linkDiv);
+            
+            // Add event listener to remove button
+            linkDiv.querySelector('.remove-link-btn').addEventListener('click', function() {
+                verificationLinksContainer.removeChild(linkDiv);
+                verificationLinkCount--;
+            });
+        }
+
+        // Add verification link field to edit modal
+        function addEditVerificationLinkField(value = '') {
+            if (verificationLinkCount >= 10) {
+                alert('Maksimal 10 link verifikasi!');
+                return;
+            }
+            
+            const index = verificationLinkCount;
+            verificationLinkCount++;
+            
+            const linkDiv = document.createElement('div');
+            linkDiv.className = 'verification-link-item';
+            linkDiv.innerHTML = `
+                <input type="url" class="form-input edit-verification-link-input" placeholder="https://example.com" value="${value}" style="flex: 1;">
+                <button type="button" class="remove-link-btn" data-index="${index}">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+            
+            editVerificationLinksContainer.appendChild(linkDiv);
+            
+            // Add event listener to remove button
+            linkDiv.querySelector('.remove-link-btn').addEventListener('click', function() {
+                editVerificationLinksContainer.removeChild(linkDiv);
+                verificationLinkCount--;
+            });
+        }
+
+        // Generate unique ID
+        function generateId() {
+            return Date.now().toString(36) + Math.random().toString(36).substr(2);
+        }
+
+        // Logout user
+        function logout() {
+            localStorage.removeItem('oxalock_user');
+            currentUser = null;
+            userLinks = [];
+            checkUserRegistration();
+        }
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check user registration
+            checkUserRegistration();
+            
+            // Registration modal events
+            document.getElementById('closeRegister').addEventListener('click', function() {
+                registerModal.style.display = 'none';
+            });
+            
+            document.getElementById('registerBtn').addEventListener('click', function() {
+                const name = document.getElementById('name').value.trim();
+                const username = document.getElementById('username').value.trim();
+                const password = document.getElementById('password').value;
+                const confirmPassword = document.getElementById('confirmPassword').value;
+                
+                if (!name || !username || !password || !confirmPassword) {
+                    alert('Harap isi semua field!');
+                    return;
+                }
+                
+                if (password !== confirmPassword) {
+                    alert('Password tidak cocok!');
+                    return;
+                }
+                
+                // Show iPhone notification
+                showIphoneNotification('System', 'Memverifikasi Akun...', 'processing');
+                
+                // Simulate verification delay
+                setTimeout(() => {
+                    // Create user object
+                    currentUser = {
+                        name,
+                        username,
+                        password // In real app, this should be hashed
+                    };
+                    
+                    // Save to localStorage
+                    localStorage.setItem('oxalock_user', JSON.stringify(currentUser));
+                    localStorage.setItem(`oxalock_links_${username}`, JSON.stringify([]));
+                    
+                    // Show success notification
+                    showIphoneNotification('System', 'Sukses Memverifikasi Akun Mengalihkan...', 'success');
+                    
+                    // Close modal and show dashboard
+                    registerModal.style.display = 'none';
+                    
+                    // Show dashboard after a short delay
+                    setTimeout(() => {
+                        showDashboard();
+                    }, 1500);
+                    
+                }, 2000);
+            });
+            
+            // Create new link button
+            document.getElementById('createNewBtn').addEventListener('click', function() {
+                // Reset verification link fields
+                verificationLinksContainer.innerHTML = '';
+                verificationLinkCount = 0;
+                
+                // Add one initial verification link field
+                addVerificationLinkField();
+                
+                // Reset form
+                document.getElementById('targetLink').value = '';
+                document.getElementById('linkName').value = '';
+                
+                createModal.style.display = 'flex';
+            });
+            
+            // Close create modal
+            document.getElementById('closeCreate').addEventListener('click', function() {
+                createModal.style.display = 'none';
+            });
+            
+            // Add verification link button
+            document.getElementById('addVerificationLink').addEventListener('click', function() {
+                addVerificationLinkField();
+            });
+            
+            // Add edit verification link button
+            document.getElementById('addEditVerificationLink').addEventListener('click', function() {
+                addEditVerificationLinkField();
+            });
+            
+            // Upload button
+            document.getElementById('uploadBtn').addEventListener('click', function() {
+                const targetLink = document.getElementById('targetLink').value.trim();
+                const linkName = document.getElementById('linkName').value.trim();
+                const verificationLinks = Array.from(document.querySelectorAll('.verification-link-input'))
+                    .map(input => input.value.trim())
+                    .filter(link => link !== '');
+                
+                if (!targetLink || !linkName) {
+                    alert('Harap isi link tujuan dan nama link!');
+                    return;
+                }
+                
+                if (verificationLinks.length === 0) {
+                    alert('Harap tambahkan minimal satu link verifikasi!');
+                    return;
+                }
+                
+                // Close create modal
+                createModal.style.display = 'none';
+                
+                // Show upload progress modal
+                uploadModal.style.display = 'flex';
+                
+                // Simulate upload progress
+                let progress = 0;
+                const progressInterval = setInterval(() => {
+                    progress += 10;
+                    document.getElementById('uploadProgress').style.width = `${progress}%`;
+                    
+                    if (progress >= 100) {
+                        clearInterval(progressInterval);
+                        
+                        // Hide upload modal
+                        uploadModal.style.display = 'none';
+                        
+                        // Create new link object
+                        const linkId = generateId();
+                        const newLink = {
+                            id: linkId,
+                            name: linkName,
+                            targetLink: targetLink,
+                            verificationLinks: verificationLinks,
+                            visits: 0,
+                            createdAt: new Date().toISOString()
+                        };
+                        
+                        // Add to user links
+                        userLinks.push(newLink);
+                        localStorage.setItem(`oxalock_links_${currentUser.username}`, JSON.stringify(userLinks));
+                        
+                        // Show success modal
+                        const fullLink = `https://oxalockfileszoro.vercel.app?id=${linkId}`;
+                        generatedLink.value = fullLink;
+                        successUploadModal.style.display = 'flex';
+                        
+                        // Show success notification
+                        showSuccessNotification('LINK BERHASIL DI UPLOAD');
+                    }
+                }, 200);
+            });
+            
+            // Close success upload modal
+            document.getElementById('closeSuccessUpload').addEventListener('click', function() {
+                successUploadModal.style.display = 'none';
+                renderDashboard();
+            });
+            
+            document.getElementById('closeSuccessBtn').addEventListener('click', function() {
+                successUploadModal.style.display = 'none';
+                renderDashboard();
+            });
+            
+            // Close setting modal
+            document.getElementById('closeSetting').addEventListener('click', function() {
+                settingModal.style.display = 'none';
+            });
+            
+            // Confirm update button
+            document.getElementById('confirmUpdateBtn').addEventListener('click', function() {
+                const linkName = document.getElementById('editLinkName').value.trim();
+                const targetLink = document.getElementById('editTargetLink').value.trim();
+                const verificationLinks = Array.from(document.querySelectorAll('.edit-verification-link-input'))
+                    .map(input => input.value.trim())
+                    .filter(link => link !== '');
+                
+                if (!linkName || !targetLink) {
+                    alert('Harap isi nama link dan link tujuan!');
+                    return;
+                }
+                
+                if (verificationLinks.length === 0) {
+                    alert('Harap tambahkan minimal satu link verifikasi!');
+                    return;
+                }
+                
+                // Find and update link
+                const linkIndex = userLinks.findIndex(l => l.id === currentSettingLinkId);
+                if (linkIndex !== -1) {
+                    userLinks[linkIndex].name = linkName;
+                    userLinks[linkIndex].targetLink = targetLink;
+                    userLinks[linkIndex].verificationLinks = verificationLinks;
+                    
+                    localStorage.setItem(`oxalock_links_${currentUser.username}`, JSON.stringify(userLinks));
+                    
+                    // Show iPhone notification
+                    showIphoneNotification('System', `Sukses Mengupdate ${linkName} Mengalihkan Ke Dashboard...`, 'success');
+                    
+                    // Close modal and update dashboard
+                    settingModal.style.display = 'none';
+                    
+                    setTimeout(() => {
+                        renderDashboard();
+                    }, 1500);
+                }
+            });
+            
+            // Close modals when clicking outside
+            window.addEventListener('click', function(event) {
+                if (event.target === registerModal) {
+                    registerModal.style.display = 'none';
+                }
+                if (event.target === createModal) {
+                    createModal.style.display = 'none';
+                }
+                if (event.target === uploadModal) {
+                    // Don't close upload modal by clicking outside
+                }
+                if (event.target === successUploadModal) {
+                    successUploadModal.style.display = 'none';
+                    renderDashboard();
+                }
+                if (event.target === settingModal) {
+                    settingModal.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
